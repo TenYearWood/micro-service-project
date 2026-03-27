@@ -20,12 +20,14 @@ logging:
   level:
     com.csii.service.ExternalApiClient: debug
 
-#配置feign请求的log级别，有full，basic等
+#配置feign请求的log配置，可以统一默认配置也可以执行feignClient的名字来配置，日志级别有full，basic等
 feign:
   client:
     config:
       default:
         connectTimeout: 5000
         readTimeout: 5000
+        loggerLevel: basic
+      externalApi:
         loggerLevel: full
 
