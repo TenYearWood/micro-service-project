@@ -19,6 +19,7 @@ public interface ExternalApiClient {
      */
     @PostMapping("/oauth/client_token/")
     @Headers("Content-Type: application/json")
+    //@PostMapping(value = "/oauth/client_token/", headers = {"Content-Type=application/json"})
     ClientTokenResponse getClientToken(@RequestBody ClientTokenRequest clientTokenRequest);
 
 }
