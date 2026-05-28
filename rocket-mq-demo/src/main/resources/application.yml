@@ -1,0 +1,25 @@
+server:
+  port: 8001
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}/${spring.application.name}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      #设置与eureka server交互的地址和注册服务都需要依赖这个地址
+      defaultZone: http://127.0.0.1:8170/eureka
+
+spring:
+  application:
+    name: rocket-mq-demo
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: local-producer-group
+  consumer:
+    group: local-consumer-group
+    topic: MyLocalReminderTopic
+
