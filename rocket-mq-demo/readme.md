@@ -36,4 +36,4 @@
 3. 所以建议：使用1个topic + 4个不同的consumer group，每个consumer group订阅相同的topic但不同的tag（通过selectorExpression指定）。这样每个group内的消费者可以只消费特定tag的消息，且不同group之间消费进度独立，互不影响。
 4. 或者也可以使用4个topic，每个topic对应一类消息，每个topic配一个consumer group，这样更清晰，但会增加topic数量。从设计上看，如果消息属性差异不大，使用tag区分更轻量；如果消息结构完全不同，或未来可能独立扩展，使用不同topic也是合理的。
 5. 答案：不一定需要4个topic，但推荐使用4个consumer group。可以只用1个topic+4个group（通过tag区分），或者4个topic+4个group。
-6. 
+6. 消费组要细分，生产组用一个就够了。
