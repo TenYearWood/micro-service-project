@@ -23,3 +23,17 @@
 2. 订阅关系必须一致：RocketMQ 官方要求，同一个 consumerGroup 下的所有消费者实例，订阅的 Topic 和 Tag 必须完全一致。否则会导致消息混乱、消费失败等严重后果。如果有不同的消费逻辑或订阅需求，必须使用不同的 consumerGroup。
 3. 
 
+#### convertAndSend
+1. 通过分析源码可知，convertAndSend 方法内部最终还是调用了 syncSend 来完成实际的消息发送。因此，两者都会阻塞当前线程，直到 Broker 返回发送结果，是一种可靠的同步发送
+2. convertAndSend 和 syncSend 底层的通信行为其实是一样的，都是可靠的同步发送，都会同步阻塞等待 Broker 的响应。syncSend 虽然也提供了类似功能，但因其参数处理方式的差异，运行速度反而会慢一些，因此在官方推荐的便捷性场景下，convertAndSend 更合适
+3. 选择 convertAndSend：在大多数常规业务场景中，为了代码的简洁性，应优先使用 convertAndSend。它能在无需关心低级消息构建细节的情况下，提供同步发送的可靠性。、
+4. 选择 syncSend 及其重载：仅在需要 SendResult 返回值（用于发送状态判断或消息 ID 记录）、精细控制发送超时、设置延迟消息或发送事务消息等高级功能时，才考虑使用 syncSend 或 asyncSend
+
+#### topic和consumer-group的选择
+##### 有4类消息，每类消息需要不同的业务逻辑处理。是否必须用4个topic和4个consumer-group？
+1. 需要考虑RocketMQ的订阅关系一致性原则：同一个consumer group下的所有消费者必须订阅相同的topic和tag（且表达式一致），否则会报错或导致消息混乱。
+2. 如果所有消息都放在同一个topic，通过tag区分消息类型（如tagA, tagB, tagC, tagD），那么可以只用一个topic。
+3. 所以建议：使用1个topic + 4个不同的consumer group，每个consumer group订阅相同的topic但不同的tag（通过selectorExpression指定）。这样每个group内的消费者可以只消费特定tag的消息，且不同group之间消费进度独立，互不影响。
+4. 或者也可以使用4个topic，每个topic对应一类消息，每个topic配一个consumer group，这样更清晰，但会增加topic数量。从设计上看，如果消息属性差异不大，使用tag区分更轻量；如果消息结构完全不同，或未来可能独立扩展，使用不同topic也是合理的。
+5. 答案：不一定需要4个topic，但推荐使用4个consumer group。可以只用1个topic+4个group（通过tag区分），或者4个topic+4个group。
+6. 
