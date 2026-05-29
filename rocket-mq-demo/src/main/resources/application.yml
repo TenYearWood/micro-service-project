@@ -18,8 +18,10 @@ spring:
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:
-    group: local-producer-group
+    group: local-producer-group # 生产者组（自定义，同一组生产者共享配置）
+    send-message-timeout: 3000 # 消息发送超时时间（毫秒）
+    retry-times-when-send-failed: 1 # 发送失败重试次数（入门设1，避免重复发送）
   consumer:
-    group: local-consumer-group
-    topic: MyLocalReminderTopic
-
+    groupA: local-consumer-groupA # 消费者组（自定义，同一组消费者负载均衡消费）
+    groupB: local-consumer-groupB
+    message-model: CLUSTERING # 消费模式：CLUSTERING（集群模式，默认）、BROADCASTING（广播模式）

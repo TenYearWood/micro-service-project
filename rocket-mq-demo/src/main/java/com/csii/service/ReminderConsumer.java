@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
  * @date: 2026/5/28 15:14
  */
 @Service
-@RocketMQMessageListener(topic = "MyLocalReminderTopic", consumerGroup = "local-consumer-group", messageModel = MessageModel.CLUSTERING)
+@RocketMQMessageListener(topic = "MyLocalReminderTopic", consumerGroup = "${rocketmq.consumer.groupA}", messageModel = MessageModel.CLUSTERING)
 public class ReminderConsumer implements RocketMQListener<String> {
 
+    /**
+     * 接收并处理消息（消息类型与生产者发送的一致，这里是String）
+     */
     @Override
     public void onMessage(String message) {
+        // 模拟消息处理（实际项目中替换为业务逻辑，如扣减库存、发送短信等）
         System.out.println("Received reminder: " + message);
-        // 在这里处理接收到的提醒消息
+        // 入门阶段暂不添加复杂业务逻辑，后续可扩展异常处理、消息确认等
     }
 }
