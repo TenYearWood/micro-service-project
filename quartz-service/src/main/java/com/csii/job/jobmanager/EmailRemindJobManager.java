@@ -18,7 +18,7 @@ public class EmailRemindJobManager {
         String jobGroupName = "emailJobGroup";
         String triggerGroupName = "emailTriggerGroupName";
         try {
-            scheduler.start();
+            scheduler.start();      //多余，可以不写，Spring 生命周期已经启动过它
 
             JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
             if (scheduler.checkExists(jobKey)) {
